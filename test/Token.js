@@ -7,12 +7,15 @@ const tokens = (n) => {
 
 describe('Token', ()=> {
 	//contianer for tests
-	let token
+	let token, accounts, deployer
 
 	beforeEach(async ()=> {
 		//1. fetch token from blockchain
 		const Token = await ethers.getContractFactory('Token')
 		token = await Token.deploy('Dapp University', 'DAPP', '1000000')
+
+		accounts = await ethers.getSigners()
+		deployer = accounts[0]
 	})
 
 	describe('Deployment', ()=>{
@@ -39,6 +42,10 @@ describe('Token', ()=> {
 		it('has correct total supply', async ()=>{
 			//2 and 3. read that symbol is correct
 			expect(await token.totalSupply()).to.equal(totalSupply)
+		})
+
+		it('assigns total supply to deployer', async () => {
+			expect(await token.balanceOf(deployer.address)).to.equal(totalSupply)
 		})	
 	
 	})
